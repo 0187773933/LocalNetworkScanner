@@ -144,10 +144,10 @@ func parse_arp_result( arp_string string ) ( arp_result ArpResult ) {
 	return arp_result
 }
 
-func GetIPAddressFromMacAddress( mac_address string ) ( ip_address string ) {
+func GetIPAddressFromMacAddress( interface_name string , mac_address string ) ( ip_address string ) {
 	default_gateway_ip , _ := default_gateway.DiscoverGateway()
 	nmap( default_gateway_ip.String() )
-	arp_result := parse_arp_result( arp_interface("en0") )
+	arp_result := parse_arp_result( arp_interface( interface_name ) )
 	ip_address = arp_result[mac_address]
 	return
 }

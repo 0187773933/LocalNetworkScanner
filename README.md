@@ -10,6 +10,6 @@ import (
 )
 
 func main() {
-	fmt.Println( localnetwork.GetIPAddressFromMacAddress( strings.Replace( strings.ToLower( "2C-64-1F-25-6B-3C" ) , "-" , ":" , -1 ) ) )
+	fmt.Println( localnetwork.GetIPAddressFromMacAddress( "en0" , strings.Replace( strings.ToLower( "2C-64-1F-25-6B-3C" ) , "-" , ":" , -1 ) ) )
 }
 ```
