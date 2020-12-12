@@ -1,4 +1,4 @@
-package localnetworkscanner
+package scanner
 
 import (
 	"fmt"
