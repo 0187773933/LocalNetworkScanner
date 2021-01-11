@@ -225,14 +225,6 @@ func parse_arp_result( default_gateway_ip string , arp_string string ) ( arp_res
 
 }
 
-// func GetIPAddressFromMacAddress( interface_name string , mac_address string ) ( ip_address string ) {
-// 	default_gateway_ip , _ := default_gateway.DiscoverGateway()
-// 	nmap( default_gateway_ip.String() )
-// 	arp_result := parse_arp_result( arp_interface( interface_name ) )
-// 	ip_address = arp_result[mac_address]
-// 	return
-// }
-
 func sort_local_network( arp_result ArpResult ) ( network_map [][2]string ) {
 	//arp_result["192.168.1.52"] = "b8:27:eb:52:a7:6b"
 	var ip_address_ends []int
@@ -282,7 +274,14 @@ func get_default_interface_name() ( result string ) {
 	return
 }
 
+
 //C:\Windows\System32\cmd.exe /c for /F "skip=3 tokens=3*" %G in ('netsh interface show interface') do echo %%H
+
+func print_network( local_network [][2]string ) {
+	for index := range local_network {
+		fmt.Printf( "%d === %s === %s\n" , index , local_network[index][0] , local_network[index][1] )
+	}
+}
 
 func ScanLocalNetwork() ( local_network [][2]string ) {
 	fmt.Printf( "nmap exists === %t\n" , nmap_exists() )
@@ -294,5 +293,30 @@ func ScanLocalNetwork() ( local_network [][2]string ) {
 	nmap( default_gateway_ip.String() )
 	arp_result := parse_arp_result( default_gateway_ip.String() , arp_interface( interface_name ) )
 	local_network = sort_local_network( arp_result )
+
+	return
+}
+
+func PrintLocalNetwork() {
+	net := ScanLocalNetwork()
+	print_network( net )
+}
+
+func GetIPAddressFromMacAddress( mac_address string ) ( ip_address string ) {
+	fmt.Printf( "nmap exists === %t\n" , nmap_exists() )
+	fmt.Printf( "arp exists === %t\n" , arp_exists() )
+	interface_name := get_default_interface_name()
+	fmt.Printf( "Default Interface Name === %s\n" , interface_name )
+	default_gateway_ip , _ := default_gateway.DiscoverGateway()
+	fmt.Printf( "Default Gateway IP === %s\n" , default_gateway_ip.String() )
+	nmap( default_gateway_ip.String() )
+	arp_result := parse_arp_result( default_gateway_ip.String() , arp_interface( interface_name ) )
+	local_network := sort_local_network( arp_result )
+	print_network( local_network )
+	for index := range local_network {
+		if local_network[ index ][ 1 ] == mac_address {
+			ip_address = local_network[ index ][ 0 ]
+		}
+	}
 	return
 }
