@@ -1,2 +1,4 @@
+.DS_Store
+bin/
 main.go
 .gitignore
