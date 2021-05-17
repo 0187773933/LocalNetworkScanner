@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"runtime"
 	default_gateway "github.com/jackpal/gateway"
+	// netstat -rn
 	//"github.com/mdlayher/arp"
 	//"github.com/mdlayher/ethernet"
 )
@@ -283,17 +284,21 @@ func print_network( local_network [][2]string ) {
 	}
 }
 
-func ScanLocalNetwork() ( local_network [][2]string ) {
+func ScanLocalNetwork( interface_names ...string ) ( local_network [][2]string ) {
 	fmt.Printf( "nmap exists === %t\n" , nmap_exists() )
 	fmt.Printf( "arp exists === %t\n" , arp_exists() )
-	interface_name := get_default_interface_name()
+	var interface_name string
+	if len( interface_names ) > 0 {
+		interface_name = interface_names[0]
+	} else {
+		interface_name = get_default_interface_name()
+	}
 	fmt.Printf( "Default Interface Name === %s\n" , interface_name )
 	default_gateway_ip , _ := default_gateway.DiscoverGateway()
 	fmt.Printf( "Default Gateway IP === %s\n" , default_gateway_ip.String() )
 	nmap( default_gateway_ip.String() )
 	arp_result := parse_arp_result( default_gateway_ip.String() , arp_interface( interface_name ) )
 	local_network = sort_local_network( arp_result )
-
 	return
 }
 
